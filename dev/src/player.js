@@ -999,13 +999,31 @@ class MusicPlayer {
     try {
       const response = await fetch(audioUrl);
       const blob = await response.blob();
-      const metadata = await mm.parseBlob(blob);
+      const metadata = await mm.parseBlob(blob, { native: true });
       
       if (metadata.common.picture && metadata.common.picture.length > 0) {
-        const picture = metadata.common.picture[0];
-        console.log("✓ Picture found:", picture.format);
-        const blob = new Blob([picture.data], { type: picture.format });
-        return URL.createObjectURL(blob);
+        // Prefer track-specific artwork (APIC: with no description or type OTHER)
+        // over album cover (APIC:Cover with type COVER_FRONT)
+        let trackSpecificPicture = null;
+        let albumCoverPicture = null;
+        
+        // Check all pictures to find track-specific vs album cover
+        for (const picture of metadata.common.picture) {
+          // Track-specific artwork typically has no description or type OTHER (0)
+          if (picture.description === '' || picture.type === 'other') {
+            trackSpecificPicture = picture;
+          }
+          // Album cover has type 'Cover (front)'
+          if (picture.type === 'Cover (front)' || picture.description === 'Cover') {
+            albumCoverPicture = picture;
+          }
+        }
+        
+        // Use track-specific if available, otherwise use album cover
+        const picture = trackSpecificPicture || albumCoverPicture || metadata.common.picture[0];
+        console.log("✓ Picture found:", picture.format, "type:", picture.type, "desc:", picture.description);
+        const blobData = new Blob([picture.data], { type: picture.format });
+        return URL.createObjectURL(blobData);
       }
       
       console.log("✗ No picture found");
