@@ -94,6 +94,8 @@ main.album-view {
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+    max-height: 50vh;
+    overflow: hidden;
 }
 
 .view-header-section.collapsed .view-header-content {
@@ -102,6 +104,7 @@ main.album-view {
 
 .view-header-section.collapsed {
     flex-shrink: 0;
+    max-height: none;
 }
 
 .view-header-toggle {
@@ -160,13 +163,15 @@ main.album-view {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    overflow-y: auto;
+    max-height: calc(50vh - 60px);
 }
 
 /* Content Section - scrollable bottom half */
 .view-content-section {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 20px 160px;
+    padding: 20px;
 }
 
 /* Unified View Header Styles */
@@ -802,29 +807,30 @@ main.album-view {
 .breadcrumb-dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% - 5px);
     left: 0;
-    margin-top: 5px;
+    padding-top: 10px;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    min-width: 250px;
+    min-width: 280px;
     max-height: 400px;
     overflow-y: auto;
     z-index: 2000;
-    padding: 5px 0;
 }
 
-.breadcrumb-dropdown-container:hover .breadcrumb-dropdown-menu {
+.breadcrumb-dropdown-container:hover .breadcrumb-dropdown-menu,
+.breadcrumb-dropdown-menu:hover {
     display: block;
 }
 
 .breadcrumb-dropdown-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 15px;
+    gap: 12px;
+    padding: 12px 15px;
+    margin: 5px 0;
     color: white;
     cursor: pointer;
     transition: background 0.2s;
@@ -835,8 +841,8 @@ main.album-view {
 }
 
 .breadcrumb-dropdown-item img {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     object-fit: cover;
     border-radius: 4px;
 }
@@ -889,7 +895,7 @@ main.album-view {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-width: 300px;
+    width: calc((32px * 6) + (8px * 5));
 }
 
 .header-progress-bar {
@@ -1752,21 +1758,7 @@ main.album-view {
 }
 /* Persistent Player Bar */
 .persistent-player {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-    color: white;
-    padding: 15px 40px;
-    display: grid;
-    grid-template-columns: minmax(200px, 1fr) minmax(400px, 600px) minmax(400px, 1fr);
-    grid-template-rows: auto auto;
-    gap: 10px 20px;
-    align-items: center;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    display: none !important;
 }
 
 .persistent-player-info {

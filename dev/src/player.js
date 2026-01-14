@@ -103,10 +103,10 @@ class MusicPlayer {
     // Load albums dynamically from MP3 metadata
     this.albums = await loadAlbums();
 
-    // Show persistent player bar
-    if (this.persistentPlayer) {
-      this.persistentPlayer.style.display = "flex";
-    }
+    // Persistent player is now hidden (controls moved to header)
+    // if (this.persistentPlayer) {
+    //   this.persistentPlayer.style.display = "flex";
+    // }
 
     // Populate album grid
     this.displayAlbumGrid();
