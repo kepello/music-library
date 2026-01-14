@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=7">
+</head>
+<body>
+    <div class="container">
+
+        <nav id="breadcrumbs" class="breadcrumbs">
+            <span id="breadcrumbHome" class="breadcrumb-item">Inside Out</span>
+            <span id="breadcrumbSeparator1" class="breadcrumb-separator" style="display: none;"> : </span>
+            <span id="breadcrumbAlbum" class="breadcrumb-item" style="display: none;"></span>
+            <span id="breadcrumbSeparator2" class="breadcrumb-separator" style="display: none;"> : </span>
+            <span id="breadcrumbTrack" class="breadcrumb-item" style="display: none;"></span>
+        </nav>
+
+        <main class="album-view" id="mainContainer">
+            <!-- Album Selection View -->
+            <div class="album-selection" id="albumSelection">
+                <div class="view-header">
+                    <div class="view-content-row">
+                        <div class="view-image-container">
+                            <img src="library/library.png" class="view-image" alt="Inside Out">
+                        </div>
+                        <div class="view-description">
+                            <h2 class="view-title">Inside Out</h2>
+                            <p class="view-subtitle">Once ignored, now explored</p>
+                            <p>I have never thought of myself as especially well connected to my emotions. For much of my life, I've prioritized mental and logical thinking—engineering, structure, and problem-solving. Over time, I've come to recognize that in doing so, I left an important part of myself underdeveloped.</p>
+                            <p>Music has always moved me, sometimes deeply. What I didn't recognize for many years was that this response mattered—that it could be engaged with, not just experienced.</p>
+                            <p>The music I write is an attempt to approach sound and song from a different direction: not analysis, polish, or achievement, but expression. To allow myself to feel, to experiment, and to appreciate emotional release without needing to justify it. The pieces here are uneven, exploratory, and sometimes unsure—and that is intentional.</p>
+                            <p>This work exists primarily for personal growth and release. It is not offered as a measure of accomplishment, but as an ongoing process of letting something out that was long held in—and learning to value that process for what it brings.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr class="section-divider">
+                <div class="albums-grid" id="albumsGrid">
+                    <!-- Album cards will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Album Detail View -->
+            <div class="album-detail-view" id="albumDetailView" style="display: none;">
+                <div class="view-header">
+                    <div class="view-content-row">
+                        <div class="view-image-container">
+                            <img id="albumCoverArt" class="view-image" src="" alt="Album Cover">
+                        </div>
+                        <div class="view-description">
+                            <h2 id="albumTitle" class="view-title"></h2>
+                            <p id="albumSubtitle" class="view-subtitle"></p>
+                            <div id="albumDescription"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="track-list-container">
+                    <ul id="trackList" class="track-list"></ul>
+                </div>
+            </div>
+
+            <!-- Track Detail View -->
+            <div class="track-detail-view" id="trackDetailView" style="display: none;">
+                <div class="view-header">
+                    <div class="view-content-row">
+                        <div class="view-image-container">
+                            <img id="trackCoverArt" class="view-image" src="" alt="Track Cover">
+                        </div>
+                        <div class="view-description">
+                            <h2 id="trackTitle" class="view-title"></h2>
+                            <p id="trackSubtitle" class="view-subtitle"></p>
+                            <div id="trackDescription"></div>
+                            <div class="track-detail-actions">
+                                <button id="trackDetailPlayBtn" class="track-action-btn track-detail-btn">▶</button>
+                                <button id="trackDetailDownloadBtn" class="track-action-btn track-detail-btn">⬇</button>
+                                <button id="trackDetailShareBtn" class="track-action-btn track-detail-btn">⬆</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+    <!-- Expandable Lyrics Panel -->
+    <div id="lyricsPanel" class="lyrics-panel-expanded">
+        <div id="lyricsContainer" class="lyrics-panel-content">
+            <p class="no-lyrics">No lyrics available</p>
+        </div>
+    </div>
+
+    <!-- Persistent Player Bar -->
+    <div id="persistentPlayer" class="persistent-player" style="display: none;">
+        <div class="persistent-player-info">
+            <img id="persistentCoverArt" src="" alt="Cover" class="persistent-cover" style="display: none;">
+            <div class="persistent-track-info">
+                <div id="persistentTrackTitle" class="persistent-title">Ready to play</div>
+                <div id="persistentArtist" class="persistent-artist">Press play to start</div>
+            </div>
+        </div>
+        <div class="current-lyric-line-wrapper">
+            <button id="persistentLyricsBtn" class="persistent-btn lyrics-expand-btn" title="Expand Lyrics">▲</button>
+            <div id="currentLyricLine" class="current-lyric-line"></div>
+        </div>
+        <div class="persistent-player-controls">
+            <button id="persistentPrevBtn" class="persistent-btn" title="Previous Track">⏮</button>
+            <button id="persistentPlayPauseBtn" class="persistent-btn persistent-play-btn" title="Play">▶</button>
+            <button id="persistentNextBtn" class="persistent-btn" title="Next Track">⏭</button>
+            <button id="persistentStopBtn" class="persistent-btn" title="Stop">⏹</button>
+            <button id="persistentShuffleBtn" class="persistent-btn" title="Shuffle">⇄</button>
+            <button id="persistentRepeatBtn" class="persistent-btn" title="Repeat">↻</button>
+        </div>
+        <div class="persistent-player-progress">
+            <span id="persistentCurrentTime" class="persistent-time">0:00</span>
+            <input type="range" id="persistentProgressBar" class="persistent-progress-bar" min="0" max="100" value="0">
+            <span id="persistentDuration" class="persistent-time">0:00</span>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <audio id="audioPlayer"></audio>
+
+    <script type="module" src="dev/src/player.js"></script>
+</body>
+</html>
