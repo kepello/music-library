@@ -34,6 +34,9 @@ jobs:
           cd dev
           npm ci
       
+      - name: Generate library.json
+        run: node dev/scripts/generate-library.js
+      
       - name: Copy library to public
         run: |
           mkdir -p dev/tmp/public
