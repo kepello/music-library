@@ -184,6 +184,10 @@ class MusicPlayer {
 
   displayAlbumGrid() {
     this.albumsGrid.innerHTML = "";
+    
+    // Set view state for initial load
+    this.viewState = "collection";
+    this.updateBreadcrumbs();
 
     this.albums.forEach((album) => {
       const card = document.createElement("div");
