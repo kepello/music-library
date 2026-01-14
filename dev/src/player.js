@@ -71,7 +71,7 @@ class MusicPlayer {
   }
 
   async initializePlayer() {
-    // Load albums dynamically from JSON files
+    // Load albums dynamically from MP3 metadata
     this.albums = await loadAlbums();
 
     // Show persistent player bar
@@ -597,7 +597,7 @@ class MusicPlayer {
     // Set audio source
     this.audio.src = track.audio;
     
-    // Load lyrics for panel - try MP3 first, then JSON
+    // Load lyrics from MP3 metadata
     this.loadAndDisplayLyrics(track);
     
     // Update persistent player display
@@ -613,7 +613,7 @@ class MusicPlayer {
     // Set audio source
     this.audio.src = track.audio;
 
-    // Load lyrics for panel - try MP3 first, then JSON
+    // Load lyrics from MP3 metadata
     this.loadAndDisplayLyrics(track);
 
     // Update persistent player display
@@ -1142,7 +1142,6 @@ class MusicPlayer {
   }
   formatDescription(text) {
     // Convert line breaks to HTML
-    // Support both \n in JSON and actual line breaks
     return text
       .replace(/\n\n/g, "</p><p>") // Double line breaks = new paragraph
       .replace(/\n/g, "<br>") // Single line breaks = <br>
@@ -1356,7 +1355,7 @@ class MusicPlayer {
     console.log('Playing from queue:', track.audio);
     this.audio.src = track.audio;
     
-    // Load and display lyrics (MP3 first, then JSON fallback)
+    // Load and display lyrics from MP3 metadata
     await this.loadAndDisplayLyrics(track);
     
     // Update persistent player display
