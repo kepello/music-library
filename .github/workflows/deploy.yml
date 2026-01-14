@@ -35,7 +35,9 @@ jobs:
           npm ci
       
       - name: Copy library to public
-        run: cp -r library dev/tmp/public/
+        run: |
+          mkdir -p dev/tmp/public
+          cp -r library dev/tmp/public/
       
       - name: Build
         run: |
