@@ -150,6 +150,12 @@ main.album-view {
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
+/* Override paragraph margins for subtitle */
+.view-description .view-subtitle {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 .view-description {
     flex: 1;
     color: white;
@@ -293,6 +299,8 @@ main.album-view {
     font-size: 0.85em;
     opacity: 0.8;
     font-style: italic;
+    margin: 0;
+    margin-top: 2px;
 }
 
 .track-duration {
@@ -536,6 +544,7 @@ main.album-view {
 
 .album-card-info {
     padding: 15px;
+    padding-top: 12px;
     background: #f8f9fa;
 }
 
@@ -552,6 +561,7 @@ main.album-view {
     font-size: 0.9em;
     font-style: italic;
     margin: 0;
+    margin-top: 2px;
     line-height: 1.3;
 }
 
