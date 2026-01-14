@@ -4,6 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   root: '..',
+  base: '/music-library/',
   build: {
     outDir: 'dev/tmp/dist',
     rollupOptions: {
