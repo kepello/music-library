@@ -88,12 +88,14 @@ class MusicPlayer {
     this.breadcrumbAlbum = document.getElementById("breadcrumbAlbum");
     this.breadcrumbAlbumImg = document.getElementById("breadcrumbAlbumImg");
     this.breadcrumbAlbumText = document.getElementById("breadcrumbAlbumText");
+    this.breadcrumbAlbumSubtitle = document.getElementById("breadcrumbAlbumSubtitle");
     this.albumDropdown = document.getElementById("albumDropdown");
     this.breadcrumbSeparator2 = document.getElementById("breadcrumbSeparator2");
     this.breadcrumbTrackContainer = document.getElementById("breadcrumbTrackContainer");
     this.breadcrumbTrack = document.getElementById("breadcrumbTrack");
     this.breadcrumbTrackImg = document.getElementById("breadcrumbTrackImg");
     this.breadcrumbTrackText = document.getElementById("breadcrumbTrackText");
+    this.breadcrumbTrackSubtitle = document.getElementById("breadcrumbTrackSubtitle");
     this.trackDropdown = document.getElementById("trackDropdown");
 
     this.initializePlayer();
@@ -346,6 +348,13 @@ class MusicPlayer {
       this.breadcrumbSeparator1.style.display = "inline";
       this.breadcrumbAlbumContainer.style.display = "inline-block";
       this.breadcrumbAlbumText.textContent = this.currentAlbum.title;
+      this.breadcrumbAlbumSubtitle.textContent = this.currentAlbum.subtitle || '';
+      
+      if (this.currentAlbum.subtitle) {
+        this.breadcrumbAlbumSubtitle.style.display = "block";
+      } else {
+        this.breadcrumbAlbumSubtitle.style.display = "none";
+      }
       
       // Set album image
       if (this.currentAlbum.cover) {
@@ -368,6 +377,13 @@ class MusicPlayer {
       this.breadcrumbSeparator1.style.display = "inline";
       this.breadcrumbAlbumContainer.style.display = "inline-block";
       this.breadcrumbAlbumText.textContent = this.currentAlbum.title;
+      this.breadcrumbAlbumSubtitle.textContent = this.currentAlbum.subtitle || '';
+      
+      if (this.currentAlbum.subtitle) {
+        this.breadcrumbAlbumSubtitle.style.display = "block";
+      } else {
+        this.breadcrumbAlbumSubtitle.style.display = "none";
+      }
       
       // Set album image
       if (this.currentAlbum.cover) {
@@ -377,6 +393,13 @@ class MusicPlayer {
       this.breadcrumbSeparator2.style.display = "inline";
       this.breadcrumbTrackContainer.style.display = "inline-block";
       this.breadcrumbTrackText.textContent = metadata.title || `Track ${this.currentTrackIndex + 1}`;
+      this.breadcrumbTrackSubtitle.textContent = metadata.subtitle || '';
+      
+      if (metadata.subtitle) {
+        this.breadcrumbTrackSubtitle.style.display = "block";
+      } else {
+        this.breadcrumbTrackSubtitle.style.display = "none";
+      }
       
       // Set track image
       const trackCoverUrl = await this.extractCoverArt(track.audio);
@@ -818,8 +841,12 @@ class MusicPlayer {
     
     if (mp3Lyrics && mp3Lyrics.length > 0) {
       this.trackLyricsContent.innerHTML = "";
-      mp3Lyrics.forEach((line) => {
+      mp3Lyrics.forEach((line, index) => {
         const p = document.createElement("p");
+        p.className = "track-lyric-line";
+        p.dataset.time = line.time;
+        p.dataset.index = index;
+        
         if (line.text === "---") {
           const hr = document.createElement("hr");
           p.appendChild(hr);
@@ -887,6 +914,7 @@ class MusicPlayer {
   }
 
   updateLyrics(currentTime) {
+    // Update lyrics in the persistent lyrics panel (for expandable panel)
     const lines = this.lyricsContainer.querySelectorAll(".lyrics-line");
     let activeIndex = -1;
     let currentLyricText = "";
@@ -920,6 +948,32 @@ class MusicPlayer {
         line.classList.add("past");
       }
     });
+
+    // Update track lyrics content (no scrolling)
+    const trackLines = this.trackLyricsContent?.querySelectorAll(".track-lyric-line");
+    if (trackLines) {
+      let trackActiveIndex = -1;
+
+      trackLines.forEach((line, index) => {
+        const lineTime = parseFloat(line.dataset.time);
+        const nextLine = trackLines[index + 1];
+        const nextTime = nextLine ? parseFloat(nextLine.dataset.time) : Infinity;
+
+        if (currentTime >= lineTime && currentTime < nextTime) {
+          trackActiveIndex = index;
+        }
+      });
+
+      trackLines.forEach((line, index) => {
+        line.classList.remove("active", "past");
+        if (index === trackActiveIndex) {
+          line.classList.add("active");
+          // No scrolling - just highlight
+        } else if (index < trackActiveIndex) {
+          line.classList.add("past");
+        }
+      });
+    }
   }
 
   updateDuration() {
