@@ -256,17 +256,16 @@ class MusicPlayer {
   }
 
   async updateBreadcrumbs() {
-    // Show breadcrumbs
+    if (this.viewState === "collection") {
+      // Hide breadcrumbs on main page
+      this.breadcrumbs.style.display = "none";
+      return;
+    }
+    
+    // Show breadcrumbs for other views
     this.breadcrumbs.style.display = "block";
 
-    if (this.viewState === "collection") {
-      // Show: Inside Out only
-      this.breadcrumbHome.style.display = "inline";
-      this.breadcrumbSeparator1.style.display = "none";
-      this.breadcrumbAlbum.style.display = "none";
-      this.breadcrumbSeparator2.style.display = "none";
-      this.breadcrumbTrack.style.display = "none";
-    } else if (this.viewState === "album") {
+    if (this.viewState === "album") {
       // Show: Overtones : Album Name
       this.breadcrumbHome.style.display = "inline";
       this.breadcrumbSeparator1.style.display = "inline";
