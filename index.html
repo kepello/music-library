@@ -23,64 +23,86 @@
         <main class="album-view" id="mainContainer">
             <!-- Album Selection View -->
             <div class="album-selection" id="albumSelection">
-                <div class="view-header">
-                    <div class="view-content-row">
-                        <div class="view-image-container">
-                            <img src="library/library.png" class="view-image" alt="Inside Out">
-                        </div>
-                        <div class="view-description">
-                            <h2 class="view-title">Inside Out</h2>
-                            <p class="view-subtitle">Once ignored, now explored</p>
-                            <p>I have never thought of myself as especially well connected to my emotions. For much of my life, I've prioritized mental and logical thinking—engineering, structure, and problem-solving. Over time, I've come to recognize that in doing so, I left an important part of myself underdeveloped.</p>
-                            <p>Music has always moved me, sometimes deeply. What I didn't recognize for many years was that this response mattered—that it could be engaged with, not just experienced.</p>
-                            <p>The music I write is an attempt to approach sound and song from a different direction: not analysis, polish, or achievement, but expression. To allow myself to feel, to experiment, and to appreciate emotional release without needing to justify it. The pieces here are uneven, exploratory, and sometimes unsure—and that is intentional.</p>
-                            <p>This work exists primarily for personal growth and release. It is not offered as a measure of accomplishment, but as an ongoing process of letting something out that was long held in—and learning to value that process for what it brings.</p>
+                <div class="view-header-section" id="collectionHeaderSection">
+                    <div class="view-header-toggle" id="collectionHeaderToggle">
+                        <h2 class="view-title-inline">Inside Out</h2>
+                        <p class="view-subtitle-inline">Once ignored, now explored</p>
+                        <button class="header-collapse-btn" id="collectionCollapseBtn">▼</button>
+                    </div>
+                    <div class="view-header-content" id="collectionHeaderContent">
+                        <div class="view-content-row">
+                            <div class="view-image-container">
+                                <img src="library/library.png" class="view-image" alt="Inside Out">
+                            </div>
+                            <div class="view-description">
+                                <p>I have never thought of myself as especially well connected to my emotions. For much of my life, I've prioritized mental and logical thinking—engineering, structure, and problem-solving. Over time, I've come to recognize that in doing so, I left an important part of myself underdeveloped.</p>
+                                <p>Music has always moved me, sometimes deeply. What I didn't recognize for many years was that this response mattered—that it could be engaged with, not just experienced.</p>
+                                <p>The music I write is an attempt to approach sound and song from a different direction: not analysis, polish, or achievement, but expression. To allow myself to feel, to experiment, and to appreciate emotional release without needing to justify it. The pieces here are uneven, exploratory, and sometimes unsure—and that is intentional.</p>
+                                <p>This work exists primarily for personal growth and release. It is not offered as a measure of accomplishment, but as an ongoing process of letting something out that was long held in—and learning to value that process for what it brings.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <hr class="section-divider">
-                <div class="albums-grid" id="albumsGrid">
-                    <!-- Album cards will be dynamically inserted here -->
+                <div class="view-content-section">
+                    <div class="albums-grid" id="albumsGrid">
+                        <!-- Album cards will be dynamically inserted here -->
+                    </div>
                 </div>
             </div>
 
             <!-- Album Detail View -->
             <div class="album-detail-view" id="albumDetailView" style="display: none;">
-                <div class="view-header">
-                    <div class="view-content-row">
-                        <div class="view-image-container">
-                            <img id="albumCoverArt" class="view-image" src="" alt="Album Cover">
-                        </div>
-                        <div class="view-description">
-                            <h2 id="albumTitle" class="view-title"></h2>
-                            <p id="albumSubtitle" class="view-subtitle"></p>
-                            <div id="albumDescription"></div>
+                <div class="view-header-section" id="albumHeaderSection">
+                    <div class="view-header-toggle" id="albumHeaderToggle">
+                        <h2 id="albumTitleInline" class="view-title-inline"></h2>
+                        <p id="albumSubtitleInline" class="view-subtitle-inline"></p>
+                        <button class="header-collapse-btn" id="albumCollapseBtn">▼</button>
+                    </div>
+                    <div class="view-header-content" id="albumHeaderContent">
+                        <div class="view-content-row">
+                            <div class="view-image-container">
+                                <img id="albumCoverArt" class="view-image" src="" alt="Album Cover">
+                            </div>
+                            <div class="view-description">
+                                <div id="albumDescription"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="track-list-container">
-                    <ul id="trackList" class="track-list"></ul>
+                <div class="view-content-section">
+                    <div class="track-list-container">
+                        <ul id="trackList" class="track-list"></ul>
+                    </div>
                 </div>
             </div>
 
             <!-- Track Detail View -->
             <div class="track-detail-view" id="trackDetailView" style="display: none;">
-                <div class="view-header">
-                    <div class="view-content-row">
-                        <div class="view-image-container">
-                            <img id="trackCoverArt" class="view-image" src="" alt="Track Cover">
-                        </div>
-                        <div class="view-description">
-                            <h2 id="trackTitle" class="view-title"></h2>
-                            <p id="trackSubtitle" class="view-subtitle"></p>
-                            <div id="trackDescription"></div>
-                            <div class="track-detail-actions">
-                                <button id="trackDetailPlayBtn" class="track-action-btn track-detail-btn">▶</button>
-                                <button id="trackDetailDownloadBtn" class="track-action-btn track-detail-btn">⬇</button>
-                                <button id="trackDetailShareBtn" class="track-action-btn track-detail-btn">⬆</button>
+                <div class="view-header-section" id="trackHeaderSection">
+                    <div class="view-header-toggle" id="trackHeaderToggle">
+                        <h2 id="trackTitleInline" class="view-title-inline"></h2>
+                        <p id="trackSubtitleInline" class="view-subtitle-inline"></p>
+                        <button class="header-collapse-btn" id="trackCollapseBtn">▼</button>
+                    </div>
+                    <div class="view-header-content" id="trackHeaderContent">
+                        <div class="view-content-row">
+                            <div class="view-image-container">
+                                <img id="trackCoverArt" class="view-image" src="" alt="Track Cover">
+                            </div>
+                            <div class="view-description">
+                                <div id="trackDescription"></div>
+                                <div class="track-detail-actions">
+                                    <button id="trackDetailPlayBtn" class="track-action-btn track-detail-btn">▶</button>
+                                    <button id="trackDetailDownloadBtn" class="track-action-btn track-detail-btn">⬇</button>
+                                    <button id="trackDetailShareBtn" class="track-action-btn track-detail-btn">⬆</button>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="view-content-section" id="trackContentSection">
+                    <div id="trackLyricsContent" class="track-lyrics-content">
+                        <!-- Lyrics will be displayed here -->
                     </div>
                 </div>
             </div>

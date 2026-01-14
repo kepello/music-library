@@ -27,14 +27,14 @@ class MusicPlayer {
     this.albumsGrid = document.getElementById("albumsGrid");
     this.albumDetailView = document.getElementById("albumDetailView");
     this.albumCoverArt = document.getElementById("albumCoverArt");
-    this.albumTitle = document.getElementById("albumTitle");
-    this.albumSubtitle = document.getElementById("albumSubtitle");
+    this.albumTitleInline = document.getElementById("albumTitleInline");
+    this.albumSubtitleInline = document.getElementById("albumSubtitleInline");
     this.albumDescription = document.getElementById("albumDescription");
     this.trackList = document.getElementById("trackList");
     this.trackDetailView = document.getElementById("trackDetailView");
     this.trackCoverArt = document.getElementById("trackCoverArt");
-    this.trackTitle = document.getElementById("trackTitle");
-    this.trackSubtitle = document.getElementById("trackSubtitle");
+    this.trackTitleInline = document.getElementById("trackTitleInline");
+    this.trackSubtitleInline = document.getElementById("trackSubtitleInline");
     this.trackDescription = document.getElementById("trackDescription");
     this.trackDetailPlayBtn = document.getElementById("trackDetailPlayBtn");
     this.trackDetailDownloadBtn = document.getElementById("trackDetailDownloadBtn");
@@ -42,6 +42,15 @@ class MusicPlayer {
     this.lyricsContainer = document.getElementById("lyricsContainer");
     this.lyricsPanel = document.getElementById("lyricsPanel");
     this.currentLyricLine = document.getElementById("currentLyricLine");
+    this.trackLyricsContent = document.getElementById("trackLyricsContent");
+
+    // Collapsible header elements
+    this.collectionHeaderSection = document.getElementById("collectionHeaderSection");
+    this.collectionCollapseBtn = document.getElementById("collectionCollapseBtn");
+    this.albumHeaderSection = document.getElementById("albumHeaderSection");
+    this.albumCollapseBtn = document.getElementById("albumCollapseBtn");
+    this.trackHeaderSection = document.getElementById("trackHeaderSection");
+    this.trackCollapseBtn = document.getElementById("trackCollapseBtn");
 
     // Persistent player elements
     this.persistentPlayer = document.getElementById("persistentPlayer");
@@ -147,6 +156,26 @@ class MusicPlayer {
         this.showAlbumView();
       }
     });
+
+    // Collapse button listeners
+    if (this.collectionCollapseBtn) {
+      this.collectionCollapseBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.collectionHeaderSection.classList.toggle("collapsed");
+      });
+    }
+    if (this.albumCollapseBtn) {
+      this.albumCollapseBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.albumHeaderSection.classList.toggle("collapsed");
+      });
+    }
+    if (this.trackCollapseBtn) {
+      this.trackCollapseBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.trackHeaderSection.classList.toggle("collapsed");
+      });
+    }
 
     // Download listener
     if (this.downloadAlbumBtn) {
@@ -397,14 +426,14 @@ class MusicPlayer {
       history.pushState({ view: 'album', albumId }, '', url);
     }
 
-    // Display album info - title and subtitle on separate lines
-    this.albumTitle.textContent = this.currentAlbum.title;
+    // Display album info - title and subtitle in both inline and content areas
+    this.albumTitleInline.textContent = this.currentAlbum.title;
+    this.albumSubtitleInline.textContent = this.currentAlbum.subtitle || '';
     
     if (this.currentAlbum.subtitle) {
-      this.albumSubtitle.textContent = this.currentAlbum.subtitle;
-      this.albumSubtitle.style.display = "block";
+      this.albumSubtitleInline.style.display = "block";
     } else {
-      this.albumSubtitle.style.display = "none";
+      this.albumSubtitleInline.style.display = "none";
     }
 
     if (this.currentAlbum.description) {
@@ -540,14 +569,14 @@ class MusicPlayer {
     const absoluteUrl = new URL(track.audio, window.location.href).href;
     const metadata = await this.extractMetadataFromMP3(absoluteUrl);
     
-    // Update track detail content with MP3 metadata
-    this.trackTitle.textContent = metadata.title || track.title || "Unknown Track";
+    // Update track detail content with MP3 metadata - inline headers
+    this.trackTitleInline.textContent = metadata.title || track.title || "Unknown Track";
+    this.trackSubtitleInline.textContent = metadata.subtitle || '';
     
     if (metadata.subtitle) {
-      this.trackSubtitle.textContent = metadata.subtitle;
-      this.trackSubtitle.style.display = "block";
+      this.trackSubtitleInline.style.display = "block";
     } else {
-      this.trackSubtitle.style.display = "none";
+      this.trackSubtitleInline.style.display = "none";
     }
 
     if (metadata.description) {
@@ -563,6 +592,9 @@ class MusicPlayer {
         this.trackCoverArt.src = coverUrl;
       }
     });
+
+    // Load and display lyrics in the track content section
+    this.loadAndDisplayLyricsInTrackView(track);
 
     // Update breadcrumbs
     this.updateBreadcrumbs();
@@ -642,6 +674,28 @@ class MusicPlayer {
     } else {
       console.log("✗ No lyrics available in MP3");
       this.displayLyrics([]);
+    }
+  }
+
+  async loadAndDisplayLyricsInTrackView(track) {
+    // Extract lyrics from MP3 file and display in track content section
+    const absoluteUrl = new URL(track.audio, window.location.href).href;
+    const mp3Lyrics = await this.extractLyricsFromMP3(absoluteUrl);
+    
+    if (mp3Lyrics && mp3Lyrics.length > 0) {
+      this.trackLyricsContent.innerHTML = "";
+      mp3Lyrics.forEach((line) => {
+        const p = document.createElement("p");
+        if (line.text === "---") {
+          const hr = document.createElement("hr");
+          p.appendChild(hr);
+        } else {
+          p.textContent = line.text || "♪";
+        }
+        this.trackLyricsContent.appendChild(p);
+      });
+    } else {
+      this.trackLyricsContent.innerHTML = '<p class="no-lyrics">No lyrics available</p>';
     }
   }
 

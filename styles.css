@@ -78,11 +78,95 @@ main.album-view {
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
-.album-selection {
+.album-selection,
+.album-detail-view,
+.track-detail-view {
     grid-column: 1 / -1;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Collapsible Header Section */
+.view-header-section {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.view-header-section.collapsed .view-header-content {
+    display: none;
+}
+
+.view-header-section.collapsed {
+    flex-shrink: 0;
+}
+
+.view-header-toggle {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 40px;
+    cursor: pointer;
+    position: relative;
+}
+
+.view-title-inline {
+    font-size: 1.5em;
+    margin: 0;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.view-subtitle-inline {
+    font-size: 1em;
+    margin: 0;
+    color: rgba(255,255,255,0.9);
+    font-style: italic;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    flex: 1;
+}
+
+.header-collapse-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.header-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.view-header-section.collapsed .header-collapse-btn {
+    transform: rotate(180deg);
+}
+
+.view-header-content {
+    padding: 20px 40px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Content Section - scrollable bottom half */
+.view-content-section {
+    flex: 1;
     overflow-y: auto;
-    padding: 40px 20px 160px;
+    padding: 20px 20px 160px;
 }
 
 /* Unified View Header Styles */
@@ -190,9 +274,33 @@ main.album-view {
 
 /* Album Detail View */
 .album-detail-view {
-    height: 100%;
-    overflow-y: auto;
-    padding: 0 0 160px 0;
+    /* Styles now handled by common view classes above */
+}
+
+/* Track Detail View */
+.track-detail-view {
+    /* Styles now handled by common view classes above */
+}
+
+.track-lyrics-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    color: white;
+    line-height: 1.8;
+    font-size: 1.1em;
+    padding: 20px;
+}
+
+.track-lyrics-content p {
+    margin-bottom: 0.5em;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.track-lyrics-content .no-lyrics {
+    text-align: center;
+    opacity: 0.5;
+    font-style: italic;
+    padding: 60px 20px;
 }
 
 .album-header {
@@ -245,9 +353,14 @@ main.album-view {
 .track-list-container {
     max-width: 1400px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .track-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
     list-style: none;
     padding: 0;
     margin: 0;
@@ -435,7 +548,7 @@ main.album-view {
     justify-content: flex-start;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px 40px;
+    width: 100%;
 }
 
 .content-section-heading {
