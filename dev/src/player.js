@@ -68,13 +68,33 @@ class MusicPlayer {
     this.persistentCurrentTime = document.getElementById("persistentCurrentTime");
     this.persistentDuration = document.getElementById("persistentDuration");
 
+    // Header player controls
+    this.headerPlayPauseBtn = document.getElementById("headerPlayPauseBtn");
+    this.headerPrevBtn = document.getElementById("headerPrevBtn");
+    this.headerNextBtn = document.getElementById("headerNextBtn");
+    this.headerStopBtn = document.getElementById("headerStopBtn");
+    this.headerShuffleBtn = document.getElementById("headerShuffleBtn");
+    this.headerRepeatBtn = document.getElementById("headerRepeatBtn");
+    this.headerProgressBar = document.getElementById("headerProgressBar");
+    this.headerCurrentTime = document.getElementById("headerCurrentTime");
+    this.headerDuration = document.getElementById("headerDuration");
+
     // Breadcrumb elements
     this.breadcrumbs = document.getElementById("breadcrumbs");
     this.breadcrumbHome = document.getElementById("breadcrumbHome");
+    this.breadcrumbHomeImg = document.getElementById("breadcrumbHomeImg");
     this.breadcrumbSeparator1 = document.getElementById("breadcrumbSeparator1");
+    this.breadcrumbAlbumContainer = document.getElementById("breadcrumbAlbumContainer");
     this.breadcrumbAlbum = document.getElementById("breadcrumbAlbum");
+    this.breadcrumbAlbumImg = document.getElementById("breadcrumbAlbumImg");
+    this.breadcrumbAlbumText = document.getElementById("breadcrumbAlbumText");
+    this.albumDropdown = document.getElementById("albumDropdown");
     this.breadcrumbSeparator2 = document.getElementById("breadcrumbSeparator2");
+    this.breadcrumbTrackContainer = document.getElementById("breadcrumbTrackContainer");
     this.breadcrumbTrack = document.getElementById("breadcrumbTrack");
+    this.breadcrumbTrackImg = document.getElementById("breadcrumbTrackImg");
+    this.breadcrumbTrackText = document.getElementById("breadcrumbTrackText");
+    this.trackDropdown = document.getElementById("trackDropdown");
 
     this.initializePlayer();
   }
@@ -133,6 +153,29 @@ class MusicPlayer {
     }
     if (this.persistentProgressBar) {
       this.persistentProgressBar.addEventListener("input", () => this.seekFromPersistent());
+    }
+
+    // Header player event listeners
+    if (this.headerPlayPauseBtn) {
+      this.headerPlayPauseBtn.addEventListener("click", () => this.togglePlayPause());
+    }
+    if (this.headerPrevBtn) {
+      this.headerPrevBtn.addEventListener("click", () => this.previousTrack());
+    }
+    if (this.headerNextBtn) {
+      this.headerNextBtn.addEventListener("click", () => this.nextTrack());
+    }
+    if (this.headerStopBtn) {
+      this.headerStopBtn.addEventListener("click", () => this.stopPlayback());
+    }
+    if (this.headerShuffleBtn) {
+      this.headerShuffleBtn.addEventListener("click", () => this.toggleShuffle());
+    }
+    if (this.headerRepeatBtn) {
+      this.headerRepeatBtn.addEventListener("click", () => this.toggleRepeat());
+    }
+    if (this.headerProgressBar) {
+      this.headerProgressBar.addEventListener("input", () => this.seekFromHeader());
     }
 
     // Track detail action buttons
@@ -296,32 +339,123 @@ class MusicPlayer {
     }
     
     // Show breadcrumbs for other views
-    this.breadcrumbs.style.display = "block";
+    this.breadcrumbs.style.display = "flex";
 
     if (this.viewState === "album") {
-      // Show: Overtones : Album Name
-      this.breadcrumbHome.style.display = "inline";
+      // Show: Inside Out : Album Name
       this.breadcrumbSeparator1.style.display = "inline";
-      this.breadcrumbAlbum.style.display = "inline";
-      this.breadcrumbAlbum.textContent = this.currentAlbum.title;
+      this.breadcrumbAlbumContainer.style.display = "inline-block";
+      this.breadcrumbAlbumText.textContent = this.currentAlbum.title;
+      
+      // Set album image
+      if (this.currentAlbum.cover) {
+        this.breadcrumbAlbumImg.src = this.currentAlbum.cover;
+      }
+      
+      // Populate album dropdown
+      this.populateAlbumDropdown();
+      
       this.breadcrumbSeparator2.style.display = "none";
-      this.breadcrumbTrack.style.display = "none";
+      this.breadcrumbTrackContainer.style.display = "none";
     } else if (this.viewState === "track") {
-      // Show: Overtones : Album Name : Track Name
+      // Show: Inside Out : Album Name : Track Name
       const track = this.currentAlbum.tracks[this.currentTrackIndex];
       
-      // Load track title from MP3
+      // Load track metadata
       const absoluteUrl = new URL(track.audio, window.location.href).href;
       const metadata = await this.extractMetadataFromMP3(absoluteUrl);
       
-      this.breadcrumbHome.style.display = "inline";
       this.breadcrumbSeparator1.style.display = "inline";
-      this.breadcrumbAlbum.style.display = "inline";
-      this.breadcrumbAlbum.textContent = this.currentAlbum.title;
+      this.breadcrumbAlbumContainer.style.display = "inline-block";
+      this.breadcrumbAlbumText.textContent = this.currentAlbum.title;
+      
+      // Set album image
+      if (this.currentAlbum.cover) {
+        this.breadcrumbAlbumImg.src = this.currentAlbum.cover;
+      }
+      
       this.breadcrumbSeparator2.style.display = "inline";
-      this.breadcrumbTrack.style.display = "inline";
-      this.breadcrumbTrack.textContent = metadata.title || `Track ${this.currentTrackIndex + 1}`;
+      this.breadcrumbTrackContainer.style.display = "inline-block";
+      this.breadcrumbTrackText.textContent = metadata.title || `Track ${this.currentTrackIndex + 1}`;
+      
+      // Set track image
+      const trackCoverUrl = await this.extractCoverArt(track.audio);
+      if (trackCoverUrl) {
+        this.breadcrumbTrackImg.src = trackCoverUrl;
+      }
+      
+      // Populate dropdowns
+      this.populateAlbumDropdown();
+      this.populateTrackDropdown();
     }
+  }
+
+  populateAlbumDropdown() {
+    if (!this.albumDropdown) return;
+    
+    this.albumDropdown.innerHTML = "";
+    this.albums.forEach(album => {
+      const item = document.createElement("div");
+      item.className = "breadcrumb-dropdown-item";
+      
+      const img = document.createElement("img");
+      img.src = album.cover || "library/library.png";
+      img.alt = album.title;
+      
+      const text = document.createElement("span");
+      text.textContent = album.title;
+      
+      item.appendChild(img);
+      item.appendChild(text);
+      
+      if (album.id === this.currentAlbum?.id) {
+        item.style.fontWeight = "600";
+        item.style.background = "rgba(255,255,255,0.1)";
+      }
+      
+      item.addEventListener("click", () => {
+        this.loadAlbum(album.id);
+      });
+      
+      this.albumDropdown.appendChild(item);
+    });
+  }
+
+  populateTrackDropdown() {
+    if (!this.trackDropdown || !this.currentAlbum) return;
+    
+    this.trackDropdown.innerHTML = "";
+    this.currentAlbum.tracks.forEach((track, index) => {
+      const item = document.createElement("div");
+      item.className = "breadcrumb-dropdown-item";
+      
+      // Use a placeholder for track image (will be async loaded)
+      const img = document.createElement("img");
+      img.src = this.currentAlbum.cover || "library/library.png";
+      img.alt = "";
+      
+      const text = document.createElement("span");
+      text.textContent = track.title || `Track ${index + 1}`;
+      
+      // Load actual track metadata asynchronously
+      this.extractMetadataFromMP3(new URL(track.audio, window.location.href).href).then(metadata => {
+        text.textContent = metadata.title || track.title || `Track ${index + 1}`;
+      });
+      
+      item.appendChild(img);
+      item.appendChild(text);
+      
+      if (index === this.currentTrackIndex) {
+        item.style.fontWeight = "600";
+        item.style.background = "rgba(255,255,255,0.1)";
+      }
+      
+      item.addEventListener("click", () => {
+        this.showTrackDetail(index);
+      });
+      
+      this.trackDropdown.appendChild(item);
+    });
   }
 
   toggleLyrics() {
@@ -730,11 +864,21 @@ class MusicPlayer {
     const duration = this.audio.duration;
 
     if (duration) {
-      // Update persistent player progress
+      // Update both persistent and header player progress
+      const progressValue = (currentTime / duration) * 100;
+      const currentTimeText = this.formatTime(currentTime);
+      const durationText = this.formatTime(duration);
+      
       if (this.persistentProgressBar) {
-        this.persistentProgressBar.value = (currentTime / duration) * 100;
-        this.persistentCurrentTime.textContent = this.formatTime(currentTime);
-        this.persistentDuration.textContent = this.formatTime(duration);
+        this.persistentProgressBar.value = progressValue;
+        this.persistentCurrentTime.textContent = currentTimeText;
+        this.persistentDuration.textContent = durationText;
+      }
+      
+      if (this.headerProgressBar) {
+        this.headerProgressBar.value = progressValue;
+        this.headerCurrentTime.textContent = currentTimeText;
+        this.headerDuration.textContent = durationText;
       }
 
       // Update synchronized lyrics
@@ -828,6 +972,10 @@ class MusicPlayer {
     if (this.persistentPlayPauseBtn) {
       this.persistentPlayPauseBtn.textContent = text;
       this.persistentPlayPauseBtn.title = title;
+    }
+    if (this.headerPlayPauseBtn) {
+      this.headerPlayPauseBtn.textContent = text;
+      this.headerPlayPauseBtn.title = title;
     }
   }
 
@@ -963,6 +1111,9 @@ class MusicPlayer {
     if (this.persistentShuffleBtn) {
       this.persistentShuffleBtn.classList.toggle("active", this.shuffle);
     }
+    if (this.headerShuffleBtn) {
+      this.headerShuffleBtn.classList.toggle("active", this.shuffle);
+    }
 
     // Rebuild queue if actively playing
     if (this.playQueue.length > 0 && this.playContext !== "none") {
@@ -974,6 +1125,9 @@ class MusicPlayer {
     this.repeat = !this.repeat;
     if (this.persistentRepeatBtn) {
       this.persistentRepeatBtn.classList.toggle("active", this.repeat);
+    }
+    if (this.headerRepeatBtn) {
+      this.headerRepeatBtn.classList.toggle("active", this.repeat);
     }
   }
 
@@ -1477,6 +1631,11 @@ class MusicPlayer {
 
   seekFromPersistent() {
     const seekTime = (this.persistentProgressBar.value / 100) * this.audio.duration;
+    this.audio.currentTime = seekTime;
+  }
+
+  seekFromHeader() {
+    const seekTime = (this.headerProgressBar.value / 100) * this.audio.duration;
     this.audio.currentTime = seekTime;
   }
 }

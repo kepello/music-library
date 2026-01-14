@@ -729,8 +729,11 @@ main.album-view {
 }
 
 .breadcrumbs {
-    text-align: left;
-    padding: 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
     margin-bottom: 15px;
     font-size: 1.1em;
     color: rgba(255,255,255,0.9);
@@ -739,11 +742,29 @@ main.album-view {
     flex-shrink: 0;
 }
 
+.breadcrumbs-left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+}
+
+.breadcrumbs-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
 .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
     transition: all 0.3s;
     padding: 5px 10px;
     border-radius: 5px;
+    position: relative;
 }
 
 .breadcrumb-item:hover {
@@ -751,18 +772,164 @@ main.album-view {
     color: white;
 }
 
-.breadcrumb-item:last-child {
-    cursor: default;
-    font-weight: 600;
+.breadcrumb-img {
+    width: 1.2em;
+    height: 1.2em;
+    object-fit: cover;
+    border-radius: 3px;
+    vertical-align: middle;
 }
 
-.breadcrumb-item:last-child:hover {
-    background: transparent;
+.breadcrumb-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.breadcrumb-dropdown {
+    cursor: pointer;
+}
+
+.breadcrumb-dropdown .dropdown-arrow {
+    font-size: 0.7em;
+    opacity: 0.7;
+    transition: transform 0.2s;
+}
+
+.breadcrumb-dropdown-container:hover .dropdown-arrow {
+    opacity: 1;
+}
+
+.breadcrumb-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 5px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    min-width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 2000;
+    padding: 5px 0;
+}
+
+.breadcrumb-dropdown-container:hover .breadcrumb-dropdown-menu {
+    display: block;
+}
+
+.breadcrumb-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.breadcrumb-dropdown-item:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.breadcrumb-dropdown-item img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.breadcrumb-item:last-child {
+    font-weight: 600;
 }
 
 .breadcrumb-separator {
     opacity: 0.6;
     margin: 0 5px;
+}
+
+/* Header player controls */
+.header-player-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.header-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.header-btn:active {
+    transform: scale(0.95);
+}
+
+.header-btn.active {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.header-player-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+}
+
+.header-progress-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.header-progress-bar::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.header-progress-bar::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.header-progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    border: none;
+}
+
+.header-time {
+    font-size: 0.85em;
+    opacity: 0.8;
+    min-width: 40px;
+    text-align: center;
 }
 
 .album-layout {
