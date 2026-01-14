@@ -198,15 +198,15 @@ class MusicPlayer {
       img.className = "album-card-image";
       img.alt = album.title;
 
-      // Try to load album cover
-      const coverPath = `albums/${album._folderPath}/cover.jpg`;
-      img.src = coverPath;
-      img.onerror = () => {
-        // If cover.jpg doesn't exist, show a gradient placeholder
+      // Use cover from MP3 metadata (already extracted and stored as blob URL)
+      if (album.cover) {
+        img.src = album.cover;
+      } else {
+        // Show a gradient placeholder if no cover art
         img.style.display = "none";
         card.style.background =
           "linear-gradient(135deg, #8b9a9d 0%, #6b7d80 100%)";
-      };
+      }
 
       // Image container (no overlay)
       const imageContainer = document.createElement("div");
@@ -413,12 +413,13 @@ class MusicPlayer {
       this.albumDescription.style.display = "none";
     }
 
-    // Load album-level cover art from cover.jpg in album folder
-    const coverPath = `albums/${this.currentAlbum._folderPath}/cover.jpg`;
-    this.albumCoverArt.src = coverPath;
-    this.albumCoverArt.onerror = () => {
+    // Use album cover from MP3 metadata
+    if (this.currentAlbum.cover) {
+      this.albumCoverArt.src = this.currentAlbum.cover;
+      this.albumCoverArt.style.display = "block";
+    } else {
       this.albumCoverArt.style.display = "none";
-    };
+    }
 
     // Populate track list
     this.trackList.innerHTML = "";
@@ -553,9 +554,11 @@ class MusicPlayer {
       this.trackDescription.style.display = "none";
     }
 
-    // Load track cover art
-    this.loadTrackCoverForDisplay(track.audio, this.currentAlbum._folderPath).then(coverUrl => {
-      this.trackCoverArt.src = coverUrl;
+    // Load track cover art from MP3
+    this.extractCoverArt(track.audio).then(coverUrl => {
+      if (coverUrl) {
+        this.trackCoverArt.src = coverUrl;
+      }
     });
 
     // Update breadcrumbs
@@ -948,23 +951,16 @@ class MusicPlayer {
   }
 
   async loadAlbumCover() {
-    // Try to load album-level cover from the album folder
-    // Default to cover.jpg in the album folder
-    const coverPath = `albums/${this.currentAlbum._folderPath}/cover.jpg`;
-
-    // Try loading the cover image
-    const img = new Image();
-    img.onload = () => {
-      this.coverArt.src = coverPath;
+    // Use album cover from MP3 metadata
+    if (this.currentAlbum.cover) {
+      this.coverArt.src = this.currentAlbum.cover;
       this.coverArt.alt = this.currentAlbum.title;
-    };
-    img.onerror = () => {
-      // If cover.jpg doesn't exist, use placeholder
+    } else {
+      // Use placeholder if no cover art
       this.coverArt.src =
         'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23667eea" width="400" height="400"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="24" font-family="sans-serif"%3ENo Cover Art%3C/text%3E%3C/svg%3E';
       this.coverArt.alt = "No cover art";
-    };
-    img.src = coverPath;
+    }
   }
 
   async loadTrackCover(audioUrl) {
@@ -1144,24 +1140,6 @@ class MusicPlayer {
       return {};
     }
   }
-  async loadTrackCoverForDisplay(audioUrl, albumFolderPath) {
-    // Load track cover for display in expanded view
-    // Try embedded cover first, fallback to album cover
-    const absoluteUrl = new URL(audioUrl, window.location.href).href;
-    
-    try {
-      const coverUrl = await this.extractCoverArt(absoluteUrl);
-      if (coverUrl) {
-        return coverUrl;
-      }
-    } catch (error) {
-      console.error("Error extracting cover art:", error);
-    }
-    
-    // Fallback to album cover
-    return `albums/${albumFolderPath}/cover.jpg`;
-  }
-
   formatDescription(text) {
     // Convert line breaks to HTML
     // Support both \n in JSON and actual line breaks
@@ -1410,16 +1388,12 @@ class MusicPlayer {
       if (coverUrl) {
         this.persistentCoverArt.src = coverUrl;
         this.persistentCoverArt.style.display = "block";
+      } else if (this.currentAlbum.cover) {
+        // Fallback to album cover from MP3 metadata
+        this.persistentCoverArt.src = this.currentAlbum.cover;
+        this.persistentCoverArt.style.display = "block";
       } else {
-        // Fallback to album cover
-        const coverPath = `albums/${this.currentAlbum._folderPath}/cover.jpg`;
-        this.persistentCoverArt.src = coverPath;
-        this.persistentCoverArt.onerror = () => {
-          this.persistentCoverArt.style.display = "none";
-        };
-        this.persistentCoverArt.onload = () => {
-          this.persistentCoverArt.style.display = "block";
-        };
+        this.persistentCoverArt.style.display = "none";
       }
     } catch (error) {
       console.error("Error loading persistent player cover:", error);
