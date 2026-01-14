@@ -136,7 +136,7 @@ main.album-view {
 
 .view-title {
     font-size: 2em;
-    margin: 0 0 0.3em 0;
+    margin: 0;
     color: white;
     font-weight: 700;
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
@@ -144,7 +144,7 @@ main.album-view {
 
 .view-subtitle {
     font-size: 1em;
-    margin: 0 0 1em 0;
+    margin: 0;
     color: rgba(255,255,255,0.9);
     font-style: italic;
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
@@ -286,7 +286,7 @@ main.album-view {
 .track-title {
     font-weight: 600;
     font-size: 1.05em;
-    margin-bottom: 4px;
+    margin-bottom: 0;
 }
 
 .track-subtitle {
@@ -543,7 +543,7 @@ main.album-view {
     color: #333;
     font-size: 1.2em;
     font-weight: 600;
-    margin: 0 0 0.3em 0;
+    margin: 0;
     line-height: 1.2;
 }
 
